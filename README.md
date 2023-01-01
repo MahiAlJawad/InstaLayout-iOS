@@ -1,2 +1,4 @@
 # InstaLayout-iOS
-Instagram like layout using Compositional layout and Diffable datasource
+Instagram like layout using Compositional Layout and Diffable Datasource
+
+
