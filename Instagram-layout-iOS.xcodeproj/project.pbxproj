@@ -13,6 +13,8 @@
 		5A5461282961A41000F62F04 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A5461262961A41000F62F04 /* Main.storyboard */; };
 		5A54612A2961A41100F62F04 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A5461292961A41100F62F04 /* Assets.xcassets */; };
 		5A54612D2961A41100F62F04 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5A54612B2961A41100F62F04 /* LaunchScreen.storyboard */; };
+		5A5461372961A46700F62F04 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5461352961A46700F62F04 /* PhotoCell.swift */; };
+		5A5461382961A46700F62F04 /* PhotoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5A5461362961A46700F62F04 /* PhotoCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		5A5461292961A41100F62F04 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5A54612C2961A41100F62F04 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		5A54612E2961A41100F62F04 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5A5461352961A46700F62F04 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
+		5A5461362961A46700F62F04 /* PhotoCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PhotoCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +60,7 @@
 		5A54611F2961A41000F62F04 /* Instagram-layout-iOS */ = {
 			isa = PBXGroup;
 			children = (
+				5A5461342961A44400F62F04 /* PhotoCell */,
 				5A5461202961A41000F62F04 /* AppDelegate.swift */,
 				5A5461222961A41000F62F04 /* SceneDelegate.swift */,
 				5A5461242961A41000F62F04 /* ViewController.swift */,
@@ -65,6 +70,15 @@
 				5A54612E2961A41100F62F04 /* Info.plist */,
 			);
 			path = "Instagram-layout-iOS";
+			sourceTree = "<group>";
+		};
+		5A5461342961A44400F62F04 /* PhotoCell */ = {
+			isa = PBXGroup;
+			children = (
+				5A5461352961A46700F62F04 /* PhotoCell.swift */,
+				5A5461362961A46700F62F04 /* PhotoCell.xib */,
+			);
+			path = PhotoCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,6 +139,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A5461382961A46700F62F04 /* PhotoCell.xib in Resources */,
 				5A54612D2961A41100F62F04 /* LaunchScreen.storyboard in Resources */,
 				5A54612A2961A41100F62F04 /* Assets.xcassets in Resources */,
 				5A5461282961A41000F62F04 /* Main.storyboard in Resources */,
@@ -138,6 +153,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5A5461372961A46700F62F04 /* PhotoCell.swift in Sources */,
 				5A5461252961A41000F62F04 /* ViewController.swift in Sources */,
 				5A5461212961A41000F62F04 /* AppDelegate.swift in Sources */,
 				5A5461232961A41000F62F04 /* SceneDelegate.swift in Sources */,
