@@ -29,14 +29,14 @@ class ViewController: UIViewController {
     }
     
     func configureDatasource() -> UICollectionViewDiffableDataSource<Section, Photo> {
+        // Not required to register cell and configure separately
+        // Make sure you don't write reusable ID in the .xib
+        let cellRegistration = UICollectionView.CellRegistration<PhotoCell, Photo>(cellNib: UINib(nibName: "PhotoCell", bundle: nil)) { cell, indexPath, photo in
+            cell.setup(photo.ID)
+        }
+        
         let datasource = UICollectionViewDiffableDataSource<Section, Photo>(collectionView: collectionView) { collectionView, indexPath, photo in
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
-            
-            let cellSerialNumber = photo.ID
-            
-            cell.setup(cellSerialNumber)
-            
-            return cell
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: photo)
         }
         
         return datasource
@@ -65,10 +65,11 @@ class ViewController: UIViewController {
     func setupCollecitonView() {
         collectionView.dataSource = datasource
         collectionView.collectionViewLayout = getCompositionalLayout()
-        collectionView.register(
-            UINib(nibName: "PhotoCell", bundle: nil),
-            forCellWithReuseIdentifier: "PhotoCell"
-        )
+        // Old style cell registration
+//        collectionView.register(
+//            UINib(nibName: "PhotoCell", bundle: nil),
+//            forCellWithReuseIdentifier: "PhotoCell"
+//        )
     }
 
     func getCompositionalLayout() -> UICollectionViewCompositionalLayout {
