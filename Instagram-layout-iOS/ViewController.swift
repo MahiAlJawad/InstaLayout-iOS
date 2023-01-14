@@ -12,6 +12,13 @@ import UIKit
 enum Section: CaseIterable {
     case horizontalGrid
     case verticalGrid
+    
+    var sectionTitle: String {
+        switch self {
+        case .horizontalGrid: return "Horizontal Section"
+        case .verticalGrid:   return "Vertical Section"
+        }
+    }
 }
 
 struct Photo: Hashable {
@@ -22,13 +29,25 @@ struct Photo: Hashable {
 class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
+    // This information is supposed to be in viewModel
+    // And should be fetched from any API or database
+    var horizontalPhotoStore: [Photo] = []
+    
+    var verticalPhotoStore: [Photo] = []
+    
     lazy var datasource = configureDatasource()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Get dummy photo data
+        horizontalPhotoStore = getPhoto(10)
+        verticalPhotoStore = getPhoto(50)
+        
         setupCollecitonView()
         updateSnapshot()
     }
+    
     
     func configureDatasource() -> UICollectionViewDiffableDataSource<Section, Photo> {
         // Not required to register cell and configure separately
@@ -41,6 +60,19 @@ class ViewController: UIViewController {
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: photo)
         }
         
+        let headerRegistration = UICollectionView.SupplementaryRegistration<HeaderView>(
+            supplementaryNib: UINib(nibName: "HeaderView", bundle: nil),
+            elementKind: "HeaderView"
+        ) { headerView, elementKind, indexPath in
+            let headerTitle = Section.allCases[indexPath.section].sectionTitle
+            headerView.configure(with: headerTitle)
+        }
+        
+        datasource.supplementaryViewProvider = { collectionView, elementKind, indexPath in
+            let header = collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+            return header
+        }
+        
         return datasource
     }
     
@@ -48,8 +80,8 @@ class ViewController: UIViewController {
         // Create a snapshot and populate the data
         var snapshot = NSDiffableDataSourceSnapshot<Section, Photo>()
         snapshot.appendSections([.horizontalGrid, .verticalGrid])
-        snapshot.appendItems(getPhoto(10), toSection: .horizontalGrid)
-        snapshot.appendItems(getPhoto(50), toSection: .verticalGrid)
+        snapshot.appendItems(horizontalPhotoStore, toSection: .horizontalGrid)
+        snapshot.appendItems(verticalPhotoStore, toSection: .verticalGrid)
         
         datasource.apply(snapshot, animatingDifferences: true)
     }
@@ -68,11 +100,6 @@ class ViewController: UIViewController {
     func setupCollecitonView() {
         collectionView.dataSource = datasource
         collectionView.collectionViewLayout = getCompositionalLayout()
-        // Old style cell registration
-//        collectionView.register(
-//            UINib(nibName: "PhotoCell", bundle: nil),
-//            forCellWithReuseIdentifier: "PhotoCell"
-//        )
     }
 
     func getCompositionalLayout() -> UICollectionViewLayout { // For single sectin use UICollectionViewCompositionalLayout as return type
@@ -85,7 +112,7 @@ class ViewController: UIViewController {
             case .horizontalGrid:
                 let item = NSCollectionLayoutItem(
                     layoutSize: .init(
-                        widthDimension: .fractionalWidth(1/4),
+                        widthDimension: .fractionalWidth(1/3),
                         heightDimension: .fractionalHeight(1)
                     )
                 )
@@ -102,7 +129,18 @@ class ViewController: UIViewController {
                 
                 let section = NSCollectionLayoutSection(group: group)
                 
-                section.orthogonalScrollingBehavior = .paging
+                section.orthogonalScrollingBehavior = .continuous
+                
+                let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(80)
+                    ),
+                    elementKind: "HeaderView",
+                    alignment: .topLeading
+                )
+                
+                section.boundarySupplementaryItems = [sectionHeader]
                 
                 return section
                 
@@ -175,6 +213,17 @@ class ViewController: UIViewController {
                 
                 let section = NSCollectionLayoutSection(group: mainGroup)
                 
+                let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(80)
+                    ),
+                    elementKind: "HeaderView",
+                    alignment: .topLeading
+                )
+                
+                section.boundarySupplementaryItems = [sectionHeader]
+                
                 return section
             }
         }
@@ -182,20 +231,3 @@ class ViewController: UIViewController {
         return layout
     }
 }
-
-// MARK: If you don't want to use diffable style datasource
-
-//extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
-//    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        50
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
-//
-//        let cellSerialNumber = indexPath.item + 1
-//
-//        cell.setup(cellSerialNumber)
-//        return cell
-//    }
-//}

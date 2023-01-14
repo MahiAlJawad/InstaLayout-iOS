@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="U6b-Vx-4bR" customClass="HeaderView" customModule="Instagram_layout_iOS" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YiI-pM-qLh">
+                    <rect key="frame" x="5" y="5" width="310" height="40"/>
+                    <fontDescription key="fontDescription" name="Arial-BoldMT" family="Arial" pointSize="24"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="VXr-Tz-HHm"/>
+            <constraints>
+                <constraint firstItem="YiI-pM-qLh" firstAttribute="leading" secondItem="U6b-Vx-4bR" secondAttribute="leading" constant="5" id="f2e-gJ-MVK"/>
+                <constraint firstAttribute="trailing" secondItem="YiI-pM-qLh" secondAttribute="trailing" constant="5" id="hF5-5r-JWg"/>
+                <constraint firstItem="VXr-Tz-HHm" firstAttribute="bottom" secondItem="YiI-pM-qLh" secondAttribute="bottom" constant="5" id="k3W-lO-gZX"/>
+                <constraint firstItem="YiI-pM-qLh" firstAttribute="top" secondItem="U6b-Vx-4bR" secondAttribute="top" constant="5" id="xQV-La-a8S"/>
+            </constraints>
+            <connections>
+                <outlet property="headerLabel" destination="YiI-pM-qLh" id="wP9-mz-arN"/>
+            </connections>
+            <point key="canvasLocation" x="-55" y="20"/>
+        </collectionReusableView>
+    </objects>
+</document>
