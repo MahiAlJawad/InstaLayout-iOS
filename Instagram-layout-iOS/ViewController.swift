@@ -29,6 +29,8 @@ struct Photo: Hashable {
 class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
+    let urlString = "https://api.unsplash.com/photos?client_id=&page=1&per_page="
+    
     // This information is supposed to be in viewModel
     // And should be fetched from any API or database
     var horizontalPhotoStore: [Photo] = []
@@ -42,18 +44,37 @@ class ViewController: UIViewController {
         
         // Get dummy photo data
         horizontalPhotoStore = getPhoto(10)
-        verticalPhotoStore = getPhoto(50)
+        verticalPhotoStore = getPhoto(25)
         
         setupCollecitonView()
         updateSnapshot()
+        
+        //fetchPhotos(10)
     }
     
+    func fetchPhotos(_ numberOfPhotos: Int) {
+        guard let url = URL(string: urlString+"\(numberOfPhotos)") else {
+            print("Failed making url")
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            guard error == nil, let data = data  else {
+                print("Found error in URL data task")
+                return
+            }
+            
+            print("Got data: \(data)")
+        }
+        
+        task.resume()
+    }
     
     func configureDatasource() -> UICollectionViewDiffableDataSource<Section, Photo> {
         // Not required to register cell and configure separately
         // Make sure you don't write reusable ID in the .xib
         let cellRegistration = UICollectionView.CellRegistration<PhotoCell, Photo>(cellNib: UINib(nibName: "PhotoCell", bundle: nil)) { cell, indexPath, photo in
-            cell.setup(photo.ID)
+            cell.configure()
         }
         
         let datasource = UICollectionViewDiffableDataSource<Section, Photo>(collectionView: collectionView) { collectionView, indexPath, photo in

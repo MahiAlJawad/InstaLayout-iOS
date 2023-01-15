@@ -8,18 +8,45 @@
 import UIKit
 
 class PhotoCell: UICollectionViewCell {
-    @IBOutlet weak var dummyView: UIView!
-    
-    @IBOutlet weak var serialNumberLabel: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
     
-    func setup(_ serial: Int) {
-        dummyView.backgroundColor = .random
-        serialNumberLabel.text = "\(serial)"
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        imageView.image = nil
+        
+    }
+    
+    func configure() {
+        let urlString = ""
+        guard let url = URL(string: urlString) else {
+            print("Failed making url from \(urlString)")
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { data, _, error in
+            guard let data = data, error == nil else {
+                print("Failed downloading image data")
+                return
+            }
+            
+            guard let image = UIImage(data: data) else {
+                print("Failed downloading image from data")
+                return
+            }
+            
+            DispatchQueue.main.async {
+                print("Setting image")
+                self.imageView.contentMode = .scaleToFill
+                self.imageView.image = image
+            }
+        }
+        
+        task.resume()
     }
 }
 
