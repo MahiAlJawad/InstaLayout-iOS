@@ -7,6 +7,17 @@
 
 import UIKit
 
+// MARK: Structs for Data Parsing
+
+struct APIResponse: Codable {
+    let id: String
+    let urls: PhotoURL
+}
+
+struct PhotoURL: Codable {
+    let regular: String
+}
+
 // MARK: For simplicity folder structure/ design pattern not matained
 
 enum Section: CaseIterable {
@@ -22,14 +33,17 @@ enum Section: CaseIterable {
 }
 
 struct Photo: Hashable {
-    let uniqueID: UUID = UUID()
-    let ID: Int
+    let ID: String
+    let urlString: String
 }
 
 class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
-    let urlString = "https://api.unsplash.com/photos?client_id=&page=1&per_page="
+    let clientID = ""
+    var urlString: String {
+        "https://api.unsplash.com/photos?client_id=\(clientID)&page=1&per_page="
+    }
     
     // This information is supposed to be in viewModel
     // And should be fetched from any API or database
@@ -43,13 +57,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // Get dummy photo data
-        horizontalPhotoStore = getPhoto(10)
-        verticalPhotoStore = getPhoto(25)
+//        horizontalPhotoStore = getPhoto(10)
+//        verticalPhotoStore = getPhoto(25)
         
         setupCollecitonView()
         updateSnapshot()
         
-        //fetchPhotos(10)
+        fetchPhotos(10)
     }
     
     func fetchPhotos(_ numberOfPhotos: Int) {
@@ -64,7 +78,17 @@ class ViewController: UIViewController {
                 return
             }
             
-            print("Got data: \(data)")
+            do {
+                let result = try JSONDecoder().decode([APIResponse].self, from: data)
+                print("Successfully parsed data")
+                
+                let photos = result.reduce(into: [Photo]()) { result, apiResponse in
+                    let photo = Photo(ID: apiResponse.id, urlString: apiResponse.urls.regular)
+                    result.append(photo)
+                }
+            } catch {
+                print("Error: \(error)")
+            }
         }
         
         task.resume()
@@ -105,17 +129,6 @@ class ViewController: UIViewController {
         snapshot.appendItems(verticalPhotoStore, toSection: .verticalGrid)
         
         datasource.apply(snapshot, animatingDifferences: true)
-    }
-    
-    // Dummy Photo data generator
-    func getPhoto(_ numberOfPhotos: Int) -> [Photo] {
-        var photos = [Photo]()
-        
-        for i in 1...numberOfPhotos {
-            photos.append(Photo(ID: i))
-        }
-        
-        return photos
     }
     
     func setupCollecitonView() {
