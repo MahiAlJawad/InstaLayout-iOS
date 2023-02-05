@@ -7,98 +7,59 @@
 
 import UIKit
 
-// MARK: Structs for Data Parsing
-
-struct APIResponse: Codable {
-    let id: String
-    let urls: PhotoURL
-}
-
-struct PhotoURL: Codable {
-    let regular: String
-}
-
-// MARK: For simplicity folder structure/ design pattern not matained
-
-enum Section: CaseIterable {
-    case horizontalGrid
-    case verticalGrid
-    
-    var sectionTitle: String {
-        switch self {
-        case .horizontalGrid: return "Horizontal Section"
-        case .verticalGrid:   return "Vertical Section"
-        }
-    }
-}
-
-struct Photo: Hashable {
-    let ID: String
-    let urlString: String
-}
-
 class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
-    let clientID = ""
-    var urlString: String {
-        "https://api.unsplash.com/photos?client_id=\(clientID)&page=1&per_page="
-    }
-    
-    // This information is supposed to be in viewModel
-    // And should be fetched from any API or database
+    // MARK: Keeps the photo data for both of the sections
     var horizontalPhotoStore: [Photo] = []
-    
     var verticalPhotoStore: [Photo] = []
     
+    // MARK: Diffable Datasource configuration
     lazy var datasource = configureDatasource()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Get dummy photo data
-//        horizontalPhotoStore = getPhoto(10)
-//        verticalPhotoStore = getPhoto(25)
+        Task.init {
+            await loadPhotos()
+        }
         
         setupCollecitonView()
-        updateSnapshot()
-        
-        fetchPhotos(10)
     }
     
-    func fetchPhotos(_ numberOfPhotos: Int) {
-        guard let url = URL(string: urlString+"\(numberOfPhotos)") else {
-            print("Failed making url")
-            return
+    func loadPhotos() async {
+        let resultForHorizontalSection = await PhotoDownloader.shared.fetchPhotos(for: .horizontalGrid)
+        
+        switch resultForHorizontalSection {
+        case .success(let photos):
+            self.horizontalPhotoStore = photos
+            print("Photos loaded to horizontal section: \(photos.count)")
+            DispatchQueue.main.async {
+                self.updateSnapshot()
+            }
+        case .failure(let error):
+            print("Error: \(error.description)")
         }
         
-        let task = URLSession.shared.dataTask(with: url) { data, _, error in
-            guard error == nil, let data = data  else {
-                print("Found error in URL data task")
-                return
-            }
-            
-            do {
-                let result = try JSONDecoder().decode([APIResponse].self, from: data)
-                print("Successfully parsed data")
-                
-                let photos = result.reduce(into: [Photo]()) { result, apiResponse in
-                    let photo = Photo(ID: apiResponse.id, urlString: apiResponse.urls.regular)
-                    result.append(photo)
-                }
-            } catch {
-                print("Error: \(error)")
-            }
-        }
+        let resultForVerticalSection = await PhotoDownloader.shared.fetchPhotos(for: .verticalGrid)
         
-        task.resume()
+        switch resultForVerticalSection {
+        case .success(let photos):
+            print("Photos loaded to vertical section: \(photos.count)")
+            self.verticalPhotoStore = photos
+            DispatchQueue.main.async {
+                self.updateSnapshot()
+            }
+        case .failure(let error):
+            print("Error: \(error.description)")
+        }
     }
     
     func configureDatasource() -> UICollectionViewDiffableDataSource<Section, Photo> {
         // Not required to register cell and configure separately
         // Make sure you don't write reusable ID in the .xib
         let cellRegistration = UICollectionView.CellRegistration<PhotoCell, Photo>(cellNib: UINib(nibName: "PhotoCell", bundle: nil)) { cell, indexPath, photo in
-            cell.configure()
+            cell.configure(with: photo.urlString)
         }
         
         let datasource = UICollectionViewDiffableDataSource<Section, Photo>(collectionView: collectionView) { collectionView, indexPath, photo in

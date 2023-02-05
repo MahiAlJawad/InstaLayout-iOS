@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5A353D61298FDCD500E140AA /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A353D60298FDCD500E140AA /* Photo.swift */; };
+		5A353D67298FE16400E140AA /* PhotoDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A353D66298FE16400E140AA /* PhotoDownloader.swift */; };
 		5A43F9342972F658003F3F90 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A43F9322972F658003F3F90 /* HeaderView.swift */; };
 		5A43F9352972F658003F3F90 /* HeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5A43F9332972F658003F3F90 /* HeaderView.xib */; };
 		5A5461212961A41000F62F04 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5461202961A41000F62F04 /* AppDelegate.swift */; };
@@ -20,6 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5A353D60298FDCD500E140AA /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		5A353D66298FE16400E140AA /* PhotoDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoDownloader.swift; sourceTree = "<group>"; };
 		5A43F9322972F658003F3F90 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		5A43F9332972F658003F3F90 /* HeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeaderView.xib; sourceTree = "<group>"; };
 		5A54611D2961A41000F62F04 /* Instagram-layout-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Instagram-layout-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -45,6 +49,43 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5A353D62298FDE0000E140AA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				5A54612E2961A41100F62F04 /* Info.plist */,
+				5A353D60298FDCD500E140AA /* Photo.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		5A353D63298FDE1F00E140AA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				5A43F9312972F62E003F3F90 /* HeaderCell */,
+				5A5461342961A44400F62F04 /* PhotoCell */,
+				5A54612B2961A41100F62F04 /* LaunchScreen.storyboard */,
+				5A5461262961A41000F62F04 /* Main.storyboard */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		5A353D64298FE08800E140AA /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				5A5461242961A41000F62F04 /* ViewController.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		5A353D65298FE09F00E140AA /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				5A5461292961A41100F62F04 /* Assets.xcassets */,
+				5A353D66298FE16400E140AA /* PhotoDownloader.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		5A43F9312972F62E003F3F90 /* HeaderCell */ = {
 			isa = PBXGroup;
 			children = (
@@ -73,15 +114,12 @@
 		5A54611F2961A41000F62F04 /* Instagram-layout-iOS */ = {
 			isa = PBXGroup;
 			children = (
-				5A43F9312972F62E003F3F90 /* HeaderCell */,
-				5A5461342961A44400F62F04 /* PhotoCell */,
 				5A5461202961A41000F62F04 /* AppDelegate.swift */,
 				5A5461222961A41000F62F04 /* SceneDelegate.swift */,
-				5A5461242961A41000F62F04 /* ViewController.swift */,
-				5A5461262961A41000F62F04 /* Main.storyboard */,
-				5A5461292961A41100F62F04 /* Assets.xcassets */,
-				5A54612B2961A41100F62F04 /* LaunchScreen.storyboard */,
-				5A54612E2961A41100F62F04 /* Info.plist */,
+				5A353D62298FDE0000E140AA /* Model */,
+				5A353D63298FDE1F00E140AA /* View */,
+				5A353D64298FE08800E140AA /* Controller */,
+				5A353D65298FE09F00E140AA /* Helpers */,
 			);
 			path = "Instagram-layout-iOS";
 			sourceTree = "<group>";
@@ -171,6 +209,8 @@
 				5A43F9342972F658003F3F90 /* HeaderView.swift in Sources */,
 				5A5461372961A46700F62F04 /* PhotoCell.swift in Sources */,
 				5A5461252961A41000F62F04 /* ViewController.swift in Sources */,
+				5A353D67298FE16400E140AA /* PhotoDownloader.swift in Sources */,
+				5A353D61298FDCD500E140AA /* Photo.swift in Sources */,
 				5A5461212961A41000F62F04 /* AppDelegate.swift in Sources */,
 				5A5461232961A41000F62F04 /* SceneDelegate.swift in Sources */,
 			);
