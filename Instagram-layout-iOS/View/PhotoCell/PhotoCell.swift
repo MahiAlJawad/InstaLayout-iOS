@@ -9,7 +9,7 @@ import UIKit
 
 class PhotoCell: UICollectionViewCell {
     @IBOutlet weak var imageView: UIImageView!
-    var dataTask: URLSessionDataTask?
+    var task: Task<(), Never>?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -19,33 +19,22 @@ class PhotoCell: UICollectionViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         imageView.image = nil
-        dataTask?.cancel() // Cancel any previous data task if already
+        task?.cancel() // Cancel any previous data task if already
     }
     
-    func configure(with urlString: String) {
-        guard let url = URL(string: urlString) else {
-            print("Failed making url from \(urlString)")
-            return
-        }
-        
-        dataTask = URLSession.shared.dataTask(with: url) { data, _, error in
-            guard let data = data, error == nil else {
-                print("Failed downloading image data")
-                return
-            }
+    func configure(with urlString: String, photoID: String) {
+        task = Task.init {
+            let result = await PhotoDownloader.shared.getPhoto(with: urlString, photoID: photoID)
             
-            guard let image = UIImage(data: data) else {
-                print("Failed downloading image from data")
-                return
-            }
-            
-            DispatchQueue.main.async {
-                print("Setting image")
-                self.imageView.contentMode = .scaleToFill
-                self.imageView.image = image
+            switch result {
+            case .success(let image):
+                DispatchQueue.main.async {
+                    self.imageView.contentMode = .scaleToFill
+                    self.imageView.image = image
+                }
+            case .failure(let error):
+                print("Error configuring image: \(error)")
             }
         }
-        
-        dataTask?.resume()
     }
 }

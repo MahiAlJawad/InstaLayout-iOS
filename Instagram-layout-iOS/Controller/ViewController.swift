@@ -81,7 +81,7 @@ class ViewController: UIViewController {
         // Not required to register cell and configure separately
         // Make sure you don't write reusable ID in the .xib
         let cellRegistration = UICollectionView.CellRegistration<PhotoCell, Photo>(cellNib: UINib(nibName: "PhotoCell", bundle: nil)) { cell, indexPath, photo in
-            cell.configure(with: photo.urlString)
+            cell.configure(with: photo.urlString, photoID: photo.ID)
         }
         
         let datasource = UICollectionViewDiffableDataSource<Section, Photo>(collectionView: collectionView) { collectionView, indexPath, photo in

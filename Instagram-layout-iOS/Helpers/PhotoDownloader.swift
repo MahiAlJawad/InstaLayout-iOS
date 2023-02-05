@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 // MARK: Structs for Data Parsing
 
@@ -31,7 +32,35 @@ enum PhotoLoadingError: Error {
 
 class PhotoDownloader {
     private let clientID = "MtbUdAX1t1vEWaNqHhid1NdUR7bLxGqeSxo_qviBq6Y"
+    private let cache = NSCache<NSString, UIImage>()
     static let shared = PhotoDownloader()
+    
+    func getPhoto(with urlString: String, photoID: String) async -> Result<UIImage, PhotoLoadingError> {
+        if let cachedImage = cache.object(forKey: photoID as NSString) {
+            print("Found image from the cache")
+            return .success(cachedImage)
+        }
+        
+        guard let url = URL(string: urlString) else {
+            print("Failed making url")
+            return .failure(.invalidURL)
+        }
+        
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            
+            guard let image = UIImage(data: data) else {
+                print("Failed downloading image from url")
+                return .failure(.serverError)
+            }
+            cache.setObject(image, forKey: photoID as NSString)
+            
+            return .success(image)
+        } catch {
+            print("Error: \(error)")
+            return .failure(.serverError)
+        }
+    }
     
     func fetchPhotos(for section: Section) async -> Result<[Photo], PhotoLoadingError> {
         var urlString: String {
