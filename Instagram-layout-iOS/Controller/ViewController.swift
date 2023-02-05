@@ -19,11 +19,34 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Asynchronously loads photos to the `photoStore`
+        // After loading is completed this function also updates
+        // collection view using `updateSnapshot()` function
         Task.init {
             await loadPhotos()
         }
         
         setupCollecitonView()
+    }
+    
+    func setupCollecitonView() {
+        collectionView.dataSource = datasource
+        collectionView.collectionViewLayout = getCompositionalLayout()
+        
+        // This 2 lines are required to enable drag and drop delegates
+        // In order to Reorder collectionview cells
+        collectionView.dropDelegate = self
+        collectionView.dragDelegate = self
+    }
+    
+    func updateSnapshot() {
+        // Create a snapshot and populate the data
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Photo>()
+        snapshot.appendSections([.horizontalGrid, .verticalGrid])
+        snapshot.appendItems(photoStore[.horizontalGrid] ?? [], toSection: .horizontalGrid)
+        snapshot.appendItems(photoStore[.verticalGrid] ?? [], toSection: .verticalGrid)
+        
+        datasource.apply(snapshot, animatingDifferences: true)
     }
     
     func loadPhotos() async {
@@ -78,22 +101,26 @@ class ViewController: UIViewController {
             return header
         }
         
-        return datasource
-    }
-    
-    func updateSnapshot() {
-        // Create a snapshot and populate the data
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Photo>()
-        snapshot.appendSections([.horizontalGrid, .verticalGrid])
-        snapshot.appendItems(photoStore[.horizontalGrid] ?? [], toSection: .horizontalGrid)
-        snapshot.appendItems(photoStore[.verticalGrid] ?? [], toSection: .verticalGrid)
+        // MARK: We need this methods for Reordering to work
+        datasource.reorderingHandlers.canReorderItem = { photo in
+            // This enables every photo to be able to reordered
+            // We can also individually return false to make
+            // any individual photo not to be reordered
+            return true
+        }
         
-        datasource.apply(snapshot, animatingDifferences: true)
-    }
-    
-    func setupCollecitonView() {
-        collectionView.dataSource = datasource
-        collectionView.collectionViewLayout = getCompositionalLayout()
+        datasource.reorderingHandlers.didReorder = { [weak self] transaction in
+            // We will get a call here after reordering is done
+            // We just update our data according to the updated order.
+            // This is optional work, the actual use of this block is to
+            // update database according to the latest data order (if required
+            // to maintain order in the database)
+            
+            self?.photoStore[.verticalGrid] = transaction.finalSnapshot.itemIdentifiers(inSection: .verticalGrid)
+            self?.photoStore[.horizontalGrid] = transaction.finalSnapshot.itemIdentifiers(inSection: .horizontalGrid)
+        }
+        
+        return datasource
     }
 
     func getCompositionalLayout() -> UICollectionViewLayout { // For single sectin use UICollectionViewCompositionalLayout as return type
@@ -223,5 +250,17 @@ class ViewController: UIViewController {
         }
         
         return layout
+    }
+}
+
+// MARK: This methods are required the Reorder feature to work
+// Because reorderig includes drag and drop approach
+extension ViewController: UICollectionViewDragDelegate, UICollectionViewDropDelegate {
+    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        []
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
+        // Do nothing
     }
 }
