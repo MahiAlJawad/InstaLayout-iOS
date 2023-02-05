@@ -11,8 +11,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var collectionView: UICollectionView!
     
     // MARK: Keeps the photo data for both of the sections
-    var horizontalPhotoStore: [Photo] = []
-    var verticalPhotoStore: [Photo] = []
+    var photoStore: [Section: [Photo]] = [:]
     
     // MARK: Diffable Datasource configuration
     lazy var datasource = configureDatasource()
@@ -32,7 +31,7 @@ class ViewController: UIViewController {
         
         switch resultForHorizontalSection {
         case .success(let photos):
-            self.horizontalPhotoStore = photos
+            self.photoStore[.horizontalGrid] = photos
             print("Photos loaded to horizontal section: \(photos.count)")
             DispatchQueue.main.async {
                 self.updateSnapshot()
@@ -46,7 +45,7 @@ class ViewController: UIViewController {
         switch resultForVerticalSection {
         case .success(let photos):
             print("Photos loaded to vertical section: \(photos.count)")
-            self.verticalPhotoStore = photos
+            self.photoStore[.verticalGrid] = photos
             DispatchQueue.main.async {
                 self.updateSnapshot()
             }
@@ -86,8 +85,8 @@ class ViewController: UIViewController {
         // Create a snapshot and populate the data
         var snapshot = NSDiffableDataSourceSnapshot<Section, Photo>()
         snapshot.appendSections([.horizontalGrid, .verticalGrid])
-        snapshot.appendItems(horizontalPhotoStore, toSection: .horizontalGrid)
-        snapshot.appendItems(verticalPhotoStore, toSection: .verticalGrid)
+        snapshot.appendItems(photoStore[.horizontalGrid] ?? [], toSection: .horizontalGrid)
+        snapshot.appendItems(photoStore[.verticalGrid] ?? [], toSection: .verticalGrid)
         
         datasource.apply(snapshot, animatingDifferences: true)
     }
