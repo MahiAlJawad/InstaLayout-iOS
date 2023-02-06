@@ -31,7 +31,7 @@ enum PhotoLoadingError: Error {
 }
 
 class PhotoDownloader {
-    private let clientID = "MtbUdAX1t1vEWaNqHhid1NdUR7bLxGqeSxo_qviBq6Y"
+    private let clientID = "Register in Unsplash API and get your key"
     private let cache = NSCache<NSString, UIImage>()
     static let shared = PhotoDownloader()
     
