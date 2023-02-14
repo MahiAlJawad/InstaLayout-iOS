@@ -49,6 +49,8 @@ Overall, this code implements a multisection collection view with diffable data 
 * You'll get a `clientID` after completing the process. Ta-da.
 * Now in `PhotoDownloader.swift` file replace the following property with your `clientID`:
 
-```private let clientID = "Your clientID"
+```
+private let clientID = "Your clientID"
+
 ```
 * Build and run
